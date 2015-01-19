@@ -7,7 +7,7 @@ public class PlayerFootsteps : MonoBehaviour {
 
 	bool step = true;
 	bool playing = false;
-	float audioLength = 0.3f;
+	float audioLength = 0.5f;
 	float elapTime = 0f;
 
 	void OnControllerColliderHit(ControllerColliderHit hit)
@@ -15,46 +15,25 @@ public class PlayerFootsteps : MonoBehaviour {
 		CharacterController controller = GetComponent<CharacterController> ();
 
 		if (controller.isGrounded && controller.velocity.magnitude < 7 && 
-						controller.velocity.magnitude > 5 && hit.gameObject.tag == "Ground" && step == true ||
-		    controller.isGrounded && controller.velocity.magnitude < 7 && 
 		    controller.velocity.magnitude > 5 && hit.gameObject.tag == "Untagged" && step == true) 
 		{
 			walkOnGround();
 		}
 	}
 
+	IEnumerator WaitForFootSteps(float stepsLength) { step = false; yield return new WaitForSeconds(stepsLength); step = true; }
+
 	void walkOnGround()
 	{
-		/*
-		if (!playing) 
-		{
-			step = false;
-			playing = true;
-			elapTime = 0f;
+			//Debug.Log(elapTime + " seconds");
 			audio.clip = ground;
-			audio.Play ();
-			step = true;
-		}
-		*/
-
-		if(!audio.isPlaying)
-		{
-			audio.clip = ground;
-			audio.Play ();
-		}
-		
+			audio.Play();
+			StartCoroutine(WaitForFootSteps(audioLength));
 	}
 
 	void Update()
 	{
-		if(playing)
-		{
-			elapTime += Time.deltaTime;
-			if(elapTime >= audioLength)
-			{
-				playing = false;
-			}
-		}
+
 	}
 	
 }
